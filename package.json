@@ -1,0 +1,27 @@
+{
+  "name": "wiiz-dev",
+  "version": "1.0.0",
+  "description": "Wiiz Dev - Full Stack Application",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../wiiz && npm install",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd wiiz && npm install",
+    "start": "concurrently -n \"BACKEND,FRONTEND\" -c \"yellow,cyan\" \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd wiiz && npm run dev",
+    "dev": "npm run start",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd wiiz && npm run build",
+    "test:backend": "cd backend && npm run dev",
+    "test:frontend": "cd wiiz && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
