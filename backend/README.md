@@ -30,7 +30,7 @@ Ajoutez ces variables dans Render :
 
 ```env
 NODE_ENV=production
-MONGODB_URI=mongodb+srv://wiiz:dev@cluster0wiiz.oyr5bzu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0wiiz
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority
 JWT_SECRET=votre-secret-jwt-tres-securise-ici
 JWT_EXPIRES_IN=7d
 ALLOWED_ORIGINS=https://wiizdev.com,https://www.wiizdev.com
@@ -91,7 +91,7 @@ npm start
 Créez un fichier `.env` basé sur `.env.example` :
 
 ```env
-MONGODB_URI=mongodb+srv://wiiz:dev@cluster0wiiz.oyr5bzu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0wiiz
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority
 JWT_SECRET=votre-secret-local
 NODE_ENV=development
 ```

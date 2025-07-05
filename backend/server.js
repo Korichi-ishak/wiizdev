@@ -47,11 +47,11 @@ const connectDB = async () => {
 };
 
 // Import routes
-const authRoutes = require('./dist/routes/auth');
-const projectRoutes = require('./dist/routes/projects');
-const techStackRoutes = require('./dist/routes/techstack');
-const emailRoutes = require('./dist/routes/emails');
-const settingsRoutes = require('./dist/routes/settings');
+const authRoutes = require('./dist/routes/auth').default;
+const projectRoutes = require('./dist/routes/projects').default;
+const techStackRoutes = require('./dist/routes/techstack').default;
+const emailRoutes = require('./dist/routes/emails').default;
+const settingsRoutes = require('./dist/routes/settings').default;
 
 // Connect to MongoDB
 connectDB();
