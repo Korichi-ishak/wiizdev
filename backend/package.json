@@ -8,7 +8,6 @@
     "dev": "nodemon server.js",
     "build": "tsc",
     "postbuild": "echo 'Build completed successfully'",
-    "prepare": "npm install",
     "setup": "ts-node src/setup.ts",
     "seed": "ts-node src/seed.ts"
   },
