@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "tsc",
+    "build": "tsc && echo 'TypeScript compiled successfully'",
     "postbuild": "echo 'Build completed successfully'",
     "setup": "ts-node src/setup.ts",
     "seed": "ts-node src/seed.ts"
