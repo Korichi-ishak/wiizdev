@@ -267,7 +267,7 @@ export const InteractiveProjectShowcase = () => {
 
   return (
     <div ref={containerRef} className="w-full">
-      {/* Header */}
+      {/* Header with Storytelling */}
       <div className="text-center mb-16">
         <motion.span 
           className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6"
@@ -276,7 +276,7 @@ export const InteractiveProjectShowcase = () => {
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          Our Portfolio
+          Stories of Transformation
         </motion.span>
         
         <motion.h2 
@@ -286,19 +286,24 @@ export const InteractiveProjectShowcase = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
         >
-          Featured
-          <span className="block text-primary">Projects</span>
+          Every Project Tells
+          <span className="block text-primary">A Success Story</span>
         </motion.h2>
         
-        <motion.p 
-          className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-12"
+        <motion.div 
+          className="max-w-4xl mx-auto mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
         >
-          Discover our most impactful projects and the innovative solutions we've crafted for our clients.
-        </motion.p>
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
+            Behind every pixel and line of code lies a vision brought to life. These aren't just projects – they're digital transformations that solved real problems, drove tangible growth, and exceeded expectations.
+          </p>
+          <p className="text-lg text-gray-500 dark:text-gray-400">
+            From startups finding their digital voice to enterprises revolutionizing their processes, each story represents a partnership that changed everything.
+          </p>
+        </motion.div>
 
         {/* Category Filter */}
         <motion.div 

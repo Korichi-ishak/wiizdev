@@ -88,7 +88,7 @@ const Home: React.FC = () => {
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                About Our Agency
+Why Choose Wiiz Dev
               </motion.span>
               
               <motion.h2 
@@ -98,8 +98,8 @@ const Home: React.FC = () => {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                Building Digital
-                <span className="block text-primary">Experiences</span>
+                Your Digital Success
+                <span className="block text-primary">Starts Here</span>
               </motion.h2>
               
               <motion.p 
@@ -109,8 +109,7 @@ const Home: React.FC = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                We are a forward-thinking digital agency dedicated to transforming ideas into 
-                powerful digital solutions that drive real results.
+                We're not just coders – we're your digital partners. Every project we deliver transforms businesses, drives growth, and creates lasting impact for ambitious brands.
               </motion.p>
             </div>
 
@@ -126,23 +125,19 @@ const Home: React.FC = () => {
               >
                 <div className="bg-white/80 dark:bg-secondary-800/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/50 dark:border-gray-700/50">
                   <h3 className="text-2xl font-bold text-secondary dark:text-white mb-4">
-                    Our Mission
+                    Our Promise
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    Our team combines technical expertise with creative vision to deliver projects that not only 
-                    look stunning but also perform flawlessly. We believe in the power of technology to solve 
-                    real-world problems and create meaningful connections between brands and their audiences.
+                    We deliver more than websites and apps – we deliver competitive advantages. Our team combines cutting-edge technology with strategic thinking to create digital solutions that don't just look incredible, but drive measurable business growth.
                   </p>
                 </div>
 
                 <div className="bg-white/80 dark:bg-secondary-800/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/50 dark:border-gray-700/50">
                   <h3 className="text-2xl font-bold text-secondary dark:text-white mb-4">
-                    Our Approach
+                    Our Partnership
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    From startups to established enterprises, we partner with businesses of all sizes to bring 
-                    their digital ambitions to life. Our approach is collaborative, transparent, and focused on 
-                    delivering measurable results that exceed expectations.
+                    When you work with Wiiz Dev, you gain a strategic partner invested in your success. We listen, understand your goals, and craft solutions that align with your vision – delivering results that don't just meet expectations, but shatter them.
                   </p>
                 </div>
               </motion.div>
@@ -157,11 +152,10 @@ const Home: React.FC = () => {
               >
                 <div className="bg-white/80 dark:bg-secondary-800/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/50 dark:border-gray-700/50">
                   <h3 className="text-2xl font-bold text-secondary dark:text-white mb-4">
-                    Innovation First
+                    Future-Proofed
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                    At our core, we're problem solvers and innovators. We stay ahead of the curve with the latest 
-                    technologies and best practices, ensuring that every project we deliver is built for the future.
+                    Your investment deserves longevity. We build with tomorrow's technologies today, ensuring your digital presence remains competitive, scalable, and ready for whatever comes next in your industry.
                   </p>
                 </div>
 
@@ -198,11 +192,10 @@ const Home: React.FC = () => {
             >
               <div className="bg-white/80 dark:bg-secondary-800/80 backdrop-blur-sm rounded-2xl p-8 border border-gray-200/50 dark:border-gray-700/50 max-w-2xl mx-auto">
                 <h3 className="text-2xl font-bold text-secondary dark:text-white mb-4">
-                  Ready to Transform Your Ideas?
+                  Ready to Accelerate Your Growth?
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  When you work with us, you're not just getting a service provider – you're gaining a partner 
-                  committed to your success.
+                  Tell us your vision, and we'll build the roadmap to transform it into reality. Your success is our mission.
                 </p>
                 <motion.button
                   onClick={() => scrollToSection('contact')}
@@ -210,7 +203,7 @@ const Home: React.FC = () => {
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Let's Build Together
+                  Start Your Transformation
                   <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
@@ -245,15 +238,20 @@ const Home: React.FC = () => {
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              Our Technology Arsenal
+              Battle-Tested Excellence
             </motion.span>
             <h2 className="text-4xl md:text-6xl font-bold text-secondary dark:text-white mb-8">
-              Tech
-              <span className="block text-primary">Stack</span>
+              Technologies You Can
+              <span className="block text-primary">Trust & Rely On</span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Explore the cutting-edge technologies and tools we use to build exceptional digital experiences.
-            </p>
+            <div className="max-w-4xl mx-auto">
+              <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                We don't chase trends – we master proven technologies that power the world's most successful applications. Every tool in our arsenal has been battle-tested in real-world scenarios.
+              </p>
+              <p className="text-lg text-gray-500 dark:text-gray-400">
+                Your project deserves stability, performance, and reliability. That's why we choose technologies backed by thriving communities, comprehensive documentation, and enterprise-grade support.
+              </p>
+            </div>
           </motion.div>
 
           {/* Tech Stack Grid */}
@@ -366,7 +364,7 @@ const Home: React.FC = () => {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
-                View Our Projects
+                See These Technologies in Action
                 <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
@@ -427,14 +425,28 @@ const Home: React.FC = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
+              <motion.span 
+                className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                Your Growth Starts Here
+              </motion.span>
               <h2 className="text-5xl md:text-7xl font-bold text-secondary dark:text-white mb-6">
-                Start Your
-                <span className="block text-primary italic">Project Today</span>
+                Turn Your Vision Into
+                <span className="block text-primary italic">Revenue Reality</span>
               </h2>
               <div className="w-24 h-1 bg-primary mx-auto mb-6" />
-              <p className="text-lg text-secondary/60 dark:text-secondary-300 max-w-2xl mx-auto">
-                Ready to bring your vision to life? Let's discuss your project and explore how we can help you achieve your goals.
-              </p>
+              <div className="max-w-3xl mx-auto">
+                <p className="text-xl text-secondary/80 dark:text-secondary-300 mb-4">
+                  Stop wondering "what if" and start building what works. Every successful digital transformation begins with a single conversation.
+                </p>
+                <p className="text-lg text-secondary/60 dark:text-secondary-400">
+                  Whether you're launching your first app or scaling your enterprise, we'll craft a solution that doesn't just meet your needs – it accelerates your success.
+                </p>
+              </div>
             </motion.div>
 
             {/* Contact Content */}
@@ -460,7 +472,7 @@ const Home: React.FC = () => {
                   </h3>
                   <div className="space-y-6">
                     <motion.a
-                      href="mailto:ihyaet@gmail.com"
+                      href="mailto:contact@wiizdev.com"
                       className="block group"
                       whileHover={{ x: 8 }}
                       transition={{ duration: 0.2 }}
@@ -472,14 +484,14 @@ const Home: React.FC = () => {
                             Email
                           </p>
                           <p className="text-lg font-semibold text-secondary dark:text-white group-hover:text-primary transition-colors">
-                            ihyaet@gmail.com
+                            contact@wiizdev.com
                           </p>
                         </div>
                       </div>
                     </motion.a>
 
                     <motion.a
-                      href="tel:+15551234567"
+                      href="tel:+213 541945025"
                       className="block group"
                       whileHover={{ x: 8 }}
                       transition={{ duration: 0.2 }}
@@ -491,7 +503,7 @@ const Home: React.FC = () => {
                             Phone
                           </p>
                           <p className="text-lg font-semibold text-secondary dark:text-white group-hover:text-primary transition-colors">
-                            +1 (555) 123-4567
+                            +213 541945025
                           </p>
                         </div>
                       </div>
@@ -538,8 +550,8 @@ const Home: React.FC = () => {
                     Location
                   </h3>
                   <div className="text-secondary/70 dark:text-secondary-300 leading-relaxed">
-                    <p>San Francisco, CA</p>
-                    <p>United States</p>
+                    <p>Annaba</p>
+                    <p>Algeria</p>
                     <p className="text-sm mt-2 text-secondary/50 dark:text-secondary-400">
                       Remote consultations available worldwide
                     </p>
@@ -566,10 +578,10 @@ const Home: React.FC = () => {
                 <div className="relative z-10 p-8">
                   <div className="mb-8">
                     <h3 className="text-3xl font-bold text-secondary dark:text-white mb-3">
-                      Get Started
+                      Let's Build Your Success Story
                     </h3>
                     <p className="text-secondary/70 dark:text-secondary-300">
-                      Tell us about your project and we'll get back to you within 24 hours.
+                      Share your vision, challenges, and goals. We'll respond within 24 hours with a strategic roadmap to turn your ideas into profitable reality.
                     </p>
                   </div>
 
@@ -609,7 +621,7 @@ const Home: React.FC = () => {
                         <input
                           type="tel"
                           className="w-full px-4 py-3 bg-white dark:bg-secondary-700 border border-secondary/20 dark:border-secondary-600 rounded-lg transition-colors duration-200 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 text-secondary dark:text-white"
-                          placeholder="+1 (555) 123-4567"
+                          placeholder="+213 541945025"
                         />
                       </div>
                     </div>
@@ -668,10 +680,10 @@ const Home: React.FC = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
-                        Send Message
+                        Start My Digital Transformation
                       </motion.button>
                       <p className="text-center text-sm text-secondary/60 dark:text-secondary-400 mt-3">
-                        We'll respond within 24 hours
+                        Strategic consultation & project roadmap within 24 hours
                       </p>
                     </div>
                   </form>

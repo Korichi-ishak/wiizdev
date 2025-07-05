@@ -7,7 +7,7 @@ import {
   useMotionValue,
   useAnimationFrame,
 } from "framer-motion";
-import { Link } from "react-router-dom";
+
 import { GooeyText } from "./gooey-text-morphing";
 import { SplashCursor } from "./splash-cursor";
 
@@ -188,7 +188,7 @@ export const HeroParallax = () => {
             className="mb-6"
           >
             <span className="inline-block px-4 py-2 bg-primary/10 dark:bg-white/10 text-primary dark:text-white rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-primary/20 dark:border-white/20">
-              ✨ Welcome to the Future of Development
+              🚀 Digital Brilliance, Delivered
             </span>
           </motion.div>
 
@@ -200,11 +200,11 @@ export const HeroParallax = () => {
           >
             <GooeyText
               texts={[
-                "Crafting Digital",
-                "Building Dreams",
-                "Creating Magic",
-                "Coding Excellence",
-                "Designing Future"
+                "Growth-Driven",
+                "Future-Ready",
+                "Results-Focused",
+                "Brand-Powered",
+                "Success-Built"
               ]}
               morphTime={1.5}
               cooldownTime={1}
@@ -219,8 +219,7 @@ export const HeroParallax = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
           >
-            We transform ideas into stunning digital realities using cutting-edge technology 
-            and innovative design principles that captivate and inspire.
+            We help ambitious brands grow with tailor-made websites, apps, and software that drive real results. Your vision, our expertise – let's build something extraordinary together.
           </motion.p>
 
           <motion.div
@@ -234,7 +233,7 @@ export const HeroParallax = () => {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="relative z-10">Start Your Journey</span>
+              <span className="relative z-10">Get Your Free Proposal</span>
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-secondary to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 initial={false}
@@ -246,7 +245,7 @@ export const HeroParallax = () => {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              Explore Our Work
+              See Our Success Stories
             </motion.button>
           </motion.div>
 

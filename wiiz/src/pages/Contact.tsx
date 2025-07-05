@@ -91,17 +91,17 @@ const Contact: React.FC = () => {
     {
       icon: '📧',
       title: 'Email Us',
-      value: 'ihyaet@gmail.com',
+      value: 'contact@wiizdev.com',
       description: 'Drop us a line anytime',
-      action: 'mailto:ihyaet@gmail.com',
+      action: 'mailto:contact@wiizdev.com',
       color: 'from-blue-500 to-cyan-400'
     },
     {
       icon: '📞',
       title: 'Call Us',
-      value: '+1 (555) 123-4567',
+      value: '+213 541945025',
       description: 'Mon-Fri from 8am to 5pm',
-      action: 'tel:+15551234567',
+      action: 'tel:+213 541945025',
       color: 'from-green-500 to-emerald-400'
     },
     {

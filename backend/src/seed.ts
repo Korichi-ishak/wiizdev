@@ -360,7 +360,7 @@ const seedData = async () => {
     console.log('⚙️  Creating default settings...');
     const settingsData = {
       contactEmail: 'contact@wiizdev.com',
-      contactPhone: '+1 (555) 123-4567',
+      contactPhone: '+213 541945025',
       contactAddress: '123 Tech Street, Silicon Valley, CA 94025',
       socialLinks: {
         facebook: 'https://facebook.com/wiizdev',
