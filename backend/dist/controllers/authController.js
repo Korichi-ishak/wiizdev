@@ -11,15 +11,18 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
+            res.status(400).json({ error: 'Email and password are required' });
+            return;
         }
         const admin = await Admin_1.default.findOne({ email });
         if (!admin) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            res.status(401).json({ error: 'Invalid credentials' });
+            return;
         }
         const isPasswordValid = await bcryptjs_1.default.compare(password, admin.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            res.status(401).json({ error: 'Invalid credentials' });
+            return;
         }
         // Update last login
         admin.lastLogin = new Date();
@@ -45,11 +48,13 @@ const createAdmin = async (req, res) => {
     try {
         const { email, password, name, role = 'admin' } = req.body;
         if (!email || !password || !name) {
-            return res.status(400).json({ error: 'Email, password, and name are required' });
+            res.status(400).json({ error: 'Email, password, and name are required' });
+            return;
         }
         const existingAdmin = await Admin_1.default.findOne({ email });
         if (existingAdmin) {
-            return res.status(400).json({ error: 'Admin with this email already exists' });
+            res.status(400).json({ error: 'Admin with this email already exists' });
+            return;
         }
         const hashedPassword = await bcryptjs_1.default.hash(password, 10);
         const newAdmin = new Admin_1.default({

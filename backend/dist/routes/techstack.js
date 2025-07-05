@@ -11,6 +11,7 @@ router.get('/', techStackController_1.getTechStack);
 router.get('/:id', techStackController_1.getTechStackItem);
 router.post('/', auth_1.authenticateToken, auth_1.requireAdmin, techStackController_1.createTechStackItem);
 router.put('/:id', auth_1.authenticateToken, auth_1.requireAdmin, techStackController_1.updateTechStackItem);
+router.put('/:id/toggle-visibility', auth_1.authenticateToken, auth_1.requireAdmin, techStackController_1.toggleTechStackVisibility);
 router.delete('/:id', auth_1.authenticateToken, auth_1.requireAdmin, techStackController_1.deleteTechStackItem);
 exports.default = router;
 //# sourceMappingURL=techstack.js.map

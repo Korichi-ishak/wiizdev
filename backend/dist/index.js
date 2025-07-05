@@ -13,7 +13,10 @@ const auth_1 = __importDefault(require("./routes/auth"));
 const projects_1 = __importDefault(require("./routes/projects"));
 const techstack_1 = __importDefault(require("./routes/techstack"));
 const emails_1 = __importDefault(require("./routes/emails"));
+const settings_1 = __importDefault(require("./routes/settings"));
 dotenv_1.default.config();
+console.log('\n🔧 Loading environment configuration...');
+console.log('📁 .env file loaded:', process.env.MONGODB_URI ? '✅' : '❌');
 // Connect to MongoDB
 (0, database_1.default)();
 const app = (0, express_1.default)();
@@ -27,10 +30,22 @@ app.use('/api/auth', auth_1.default);
 app.use('/api/projects', projects_1.default);
 app.use('/api/techstack', techstack_1.default);
 app.use('/api/emails', emails_1.default);
+app.use('/api/settings', settings_1.default);
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Admin API is running' });
 });
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log('\n🚀 Backend Server Started Successfully!');
+    console.log('📡 Server running on port:', PORT);
+    console.log('🌐 API Base URL: http://localhost:' + PORT + '/api');
+    console.log('🔒 Environment:', process.env.NODE_ENV || 'development');
+    console.log('\n📋 Available endpoints:');
+    console.log('  - POST   /api/auth/login');
+    console.log('  - GET    /api/projects');
+    console.log('  - GET    /api/techstack');
+    console.log('  - POST   /api/emails');
+    console.log('  - GET    /api/settings');
+    console.log('  - GET    /api/health');
+    console.log('\n✨ Ready to accept requests!\n');
 });
 //# sourceMappingURL=index.js.map

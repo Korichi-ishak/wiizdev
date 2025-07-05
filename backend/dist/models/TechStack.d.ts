@@ -7,6 +7,7 @@ export interface ITechStack extends Document {
     description: string;
     logoUrl: string;
     officialWebsite: string;
+    visible: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

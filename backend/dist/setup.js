@@ -10,10 +10,23 @@ const Admin_1 = __importDefault(require("./models/Admin"));
 const TechStack_1 = __importDefault(require("./models/TechStack"));
 const Project_1 = __importDefault(require("./models/Project"));
 dotenv_1.default.config();
+const migrateTechStackVisibility = async () => {
+    try {
+        console.log('🔄 Migrating tech stack visibility field...');
+        // Update all tech stack items that don't have the visible field
+        const result = await TechStack_1.default.updateMany({ visible: { $exists: false } }, { $set: { visible: true } });
+        console.log(`✅ Updated ${result.modifiedCount} tech stack items with visibility field`);
+    }
+    catch (error) {
+        console.error('❌ Failed to migrate tech stack visibility:', error);
+    }
+};
 const setupDefaultData = async () => {
     try {
         // Connect to MongoDB
         await (0, database_1.default)();
+        // Run migrations first
+        await migrateTechStackVisibility();
         // Create default admin if none exists
         const adminCount = await Admin_1.default.countDocuments();
         if (adminCount === 0) {
@@ -43,7 +56,8 @@ const setupDefaultData = async () => {
                     color: '#61DAFB',
                     description: 'A JavaScript library for building user interfaces',
                     logoUrl: 'https://reactjs.org/logo-og.png',
-                    officialWebsite: 'https://reactjs.org'
+                    officialWebsite: 'https://reactjs.org',
+                    visible: true
                 },
                 {
                     name: 'Node.js',
@@ -52,7 +66,8 @@ const setupDefaultData = async () => {
                     color: '#339933',
                     description: 'JavaScript runtime built on Chrome\'s V8 JavaScript engine',
                     logoUrl: 'https://nodejs.org/static/images/logo.svg',
-                    officialWebsite: 'https://nodejs.org'
+                    officialWebsite: 'https://nodejs.org',
+                    visible: true
                 },
                 {
                     name: 'MongoDB',
@@ -61,7 +76,8 @@ const setupDefaultData = async () => {
                     color: '#47A248',
                     description: 'Document-oriented NoSQL database',
                     logoUrl: 'https://www.mongodb.com/assets/images/global/favicon.ico',
-                    officialWebsite: 'https://www.mongodb.com'
+                    officialWebsite: 'https://www.mongodb.com',
+                    visible: true
                 },
                 {
                     name: 'TypeScript',
@@ -70,7 +86,8 @@ const setupDefaultData = async () => {
                     color: '#3178C6',
                     description: 'Typed superset of JavaScript that compiles to plain JavaScript',
                     logoUrl: 'https://www.typescriptlang.org/favicon-32x32.png',
-                    officialWebsite: 'https://www.typescriptlang.org'
+                    officialWebsite: 'https://www.typescriptlang.org',
+                    visible: true
                 },
                 {
                     name: 'Docker',
@@ -79,7 +96,8 @@ const setupDefaultData = async () => {
                     color: '#2496ED',
                     description: 'Platform for developing, shipping, and running applications',
                     logoUrl: 'https://www.docker.com/wp-content/uploads/2022/03/Moby-logo.png',
-                    officialWebsite: 'https://www.docker.com'
+                    officialWebsite: 'https://www.docker.com',
+                    visible: true
                 }
             ];
             await TechStack_1.default.insertMany(sampleTechStack);

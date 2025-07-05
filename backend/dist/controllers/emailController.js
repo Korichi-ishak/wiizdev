@@ -52,7 +52,8 @@ const getEmail = async (req, res) => {
         const { id } = req.params;
         const email = await Email_1.default.findById(id);
         if (!email) {
-            return res.status(404).json({ error: 'Email not found' });
+            res.status(404).json({ error: 'Email not found' });
+            return;
         }
         // Mark as read if it's unread
         if (email.status === 'unread') {
@@ -71,12 +72,14 @@ const createEmail = async (req, res) => {
     try {
         const { from, name, subject, message } = req.body;
         if (!from || !name || !subject || !message) {
-            return res.status(400).json({ error: 'From, name, subject, and message are required' });
+            res.status(400).json({ error: 'From, name, subject, and message are required' });
+            return;
         }
         // Validate email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(from)) {
-            return res.status(400).json({ error: 'Invalid email format' });
+            res.status(400).json({ error: 'Invalid email format' });
+            return;
         }
         const email = new Email_1.default({
             from,
@@ -99,11 +102,13 @@ const updateEmailStatus = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
         if (!status || !['unread', 'read', 'replied'].includes(status)) {
-            return res.status(400).json({ error: 'Valid status is required' });
+            res.status(400).json({ error: 'Valid status is required' });
+            return;
         }
         const email = await Email_1.default.findByIdAndUpdate(id, { status, updatedAt: new Date() }, { new: true, runValidators: true });
         if (!email) {
-            return res.status(404).json({ error: 'Email not found' });
+            res.status(404).json({ error: 'Email not found' });
+            return;
         }
         res.json(email);
     }
@@ -118,11 +123,13 @@ const replyToEmail = async (req, res) => {
         const { id } = req.params;
         const { replyMessage } = req.body;
         if (!replyMessage) {
-            return res.status(400).json({ error: 'Reply message is required' });
+            res.status(400).json({ error: 'Reply message is required' });
+            return;
         }
         const email = await Email_1.default.findById(id);
         if (!email) {
-            return res.status(404).json({ error: 'Email not found' });
+            res.status(404).json({ error: 'Email not found' });
+            return;
         }
         // Send reply email
         await transporter.sendMail({
@@ -165,7 +172,8 @@ const deleteEmail = async (req, res) => {
         const { id } = req.params;
         const email = await Email_1.default.findByIdAndDelete(id);
         if (!email) {
-            return res.status(404).json({ error: 'Email not found' });
+            res.status(404).json({ error: 'Email not found' });
+            return;
         }
         res.json({ message: 'Email deleted successfully' });
     }

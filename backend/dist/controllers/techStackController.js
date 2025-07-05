@@ -3,14 +3,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTechStackItem = exports.updateTechStackItem = exports.createTechStackItem = exports.getTechStackItem = exports.getTechStack = void 0;
+exports.toggleTechStackVisibility = exports.deleteTechStackItem = exports.updateTechStackItem = exports.createTechStackItem = exports.getTechStackItem = exports.getTechStack = void 0;
 const TechStack_1 = __importDefault(require("../models/TechStack"));
 const getTechStack = async (req, res) => {
     try {
-        const { category, limit, page } = req.query;
+        const { category, limit, page, includeHidden } = req.query;
         const filter = {};
         if (category)
             filter.category = category;
+        // Only show visible items unless explicitly requested to include hidden ones (for admin)
+        if (includeHidden !== 'true') {
+            filter.$or = [
+                { visible: true },
+                { visible: { $exists: false } } // Include items where visible field doesn't exist (legacy items)
+            ];
+        }
         const limitNum = parseInt(limit) || 0;
         const pageNum = parseInt(page) || 1;
         const skip = limitNum > 0 ? (pageNum - 1) * limitNum : 0;
@@ -40,7 +47,8 @@ const getTechStackItem = async (req, res) => {
         const { id } = req.params;
         const item = await TechStack_1.default.findById(id);
         if (!item) {
-            return res.status(404).json({ error: 'Tech stack item not found' });
+            res.status(404).json({ error: 'Tech stack item not found' });
+            return;
         }
         res.json(item);
     }
@@ -54,11 +62,13 @@ const createTechStackItem = async (req, res) => {
     try {
         const { name, category, icon, color, description, logoUrl, officialWebsite } = req.body;
         if (!name || !category) {
-            return res.status(400).json({ error: 'Name and category are required' });
+            res.status(400).json({ error: 'Name and category are required' });
+            return;
         }
         const existingItem = await TechStack_1.default.findOne({ name: { $regex: new RegExp(`^${name}$`, 'i') } });
         if (existingItem) {
-            return res.status(400).json({ error: 'Tech stack item with this name already exists' });
+            res.status(400).json({ error: 'Tech stack item with this name already exists' });
+            return;
         }
         const item = new TechStack_1.default({
             name,
@@ -89,12 +99,14 @@ const updateTechStackItem = async (req, res) => {
                 _id: { $ne: id }
             });
             if (existingItem) {
-                return res.status(400).json({ error: 'Tech stack item with this name already exists' });
+                res.status(400).json({ error: 'Tech stack item with this name already exists' });
+                return;
             }
         }
         const item = await TechStack_1.default.findByIdAndUpdate(id, { ...updates, updatedAt: new Date() }, { new: true, runValidators: true });
         if (!item) {
-            return res.status(404).json({ error: 'Tech stack item not found' });
+            res.status(404).json({ error: 'Tech stack item not found' });
+            return;
         }
         res.json(item);
     }
@@ -109,7 +121,8 @@ const deleteTechStackItem = async (req, res) => {
         const { id } = req.params;
         const item = await TechStack_1.default.findByIdAndDelete(id);
         if (!item) {
-            return res.status(404).json({ error: 'Tech stack item not found' });
+            res.status(404).json({ error: 'Tech stack item not found' });
+            return;
         }
         res.json({ message: 'Tech stack item deleted successfully' });
     }
@@ -119,4 +132,28 @@ const deleteTechStackItem = async (req, res) => {
     }
 };
 exports.deleteTechStackItem = deleteTechStackItem;
+const toggleTechStackVisibility = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Find the current item first
+        const currentItem = await TechStack_1.default.findById(id);
+        if (!currentItem) {
+            res.status(404).json({ error: 'Tech stack item not found' });
+            return;
+        }
+        // Toggle the visibility (default to true if not set)
+        const newVisibility = currentItem.visible === false ? true : false;
+        const item = await TechStack_1.default.findByIdAndUpdate(id, { visible: newVisibility, updatedAt: new Date() }, { new: true, runValidators: true });
+        if (!item) {
+            res.status(404).json({ error: 'Tech stack item not found' });
+            return;
+        }
+        res.json(item);
+    }
+    catch (error) {
+        console.error('Toggle tech stack visibility error:', error);
+        res.status(500).json({ error: 'Failed to toggle tech stack visibility' });
+    }
+};
+exports.toggleTechStackVisibility = toggleTechStackVisibility;
 //# sourceMappingURL=techStackController.js.map

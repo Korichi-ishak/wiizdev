@@ -42,7 +42,8 @@ const getProject = async (req, res) => {
         const { id } = req.params;
         const project = await Project_1.default.findById(id);
         if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
+            res.status(404).json({ error: 'Project not found' });
+            return;
         }
         res.json(project);
     }
@@ -56,7 +57,8 @@ const createProject = async (req, res) => {
     try {
         const { title, description, thumbnail, link, techStack, category, status = 'draft' } = req.body;
         if (!title || !description) {
-            return res.status(400).json({ error: 'Title and description are required' });
+            res.status(400).json({ error: 'Title and description are required' });
+            return;
         }
         const project = new Project_1.default({
             title,
@@ -82,7 +84,8 @@ const updateProject = async (req, res) => {
         const updates = req.body;
         const project = await Project_1.default.findByIdAndUpdate(id, { ...updates, updatedAt: new Date() }, { new: true, runValidators: true });
         if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
+            res.status(404).json({ error: 'Project not found' });
+            return;
         }
         res.json(project);
     }
@@ -97,7 +100,8 @@ const deleteProject = async (req, res) => {
         const { id } = req.params;
         const project = await Project_1.default.findByIdAndDelete(id);
         if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
+            res.status(404).json({ error: 'Project not found' });
+            return;
         }
         res.json({ message: 'Project deleted successfully' });
     }

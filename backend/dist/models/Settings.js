@@ -34,49 +34,44 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const techStackSchema = new mongoose_1.Schema({
-    name: {
+const SettingsSchema = new mongoose_1.Schema({
+    contactEmail: {
         type: String,
         required: true,
-        trim: true,
-        unique: true
+        default: 'contact@wiizdev.com'
     },
-    category: {
+    contactPhone: {
         type: String,
-        required: true,
-        enum: ['frontend', 'backend', 'database', 'devops', 'mobile', 'other']
-    },
-    icon: {
-        type: String,
-        trim: true,
         default: ''
     },
-    color: {
+    contactAddress: {
         type: String,
-        trim: true,
-        default: '#000000'
-    },
-    description: {
-        type: String,
-        trim: true,
         default: ''
     },
-    logoUrl: {
-        type: String,
-        trim: true,
-        default: ''
+    socialLinks: {
+        facebook: { type: String, default: '' },
+        twitter: { type: String, default: '' },
+        linkedin: { type: String, default: '' },
+        github: { type: String, default: '' },
+        instagram: { type: String, default: '' }
     },
-    officialWebsite: {
-        type: String,
-        trim: true,
-        default: ''
+    emailNotifications: {
+        enabled: { type: Boolean, default: true },
+        recipientEmails: {
+            type: [String],
+            default: ['admin@wiizdev.com']
+        }
     },
-    visible: {
-        type: Boolean,
-        default: true
+    autoReplyMessage: {
+        type: String,
+        default: 'Thank you for contacting Wiiz Dev. We have received your message and will get back to you within 24 hours.'
+    },
+    businessHours: {
+        type: String,
+        default: 'Monday - Friday: 9:00 AM - 6:00 PM'
     }
 }, {
     timestamps: true
 });
-exports.default = mongoose_1.default.model('TechStack', techStackSchema);
-//# sourceMappingURL=TechStack.js.map
+exports.default = mongoose_1.default.model('Settings', SettingsSchema);
+//# sourceMappingURL=Settings.js.map
