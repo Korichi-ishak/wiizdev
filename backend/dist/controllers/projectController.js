@@ -23,12 +23,7 @@ const getProjects = async (req, res) => {
         const total = await Project_1.default.countDocuments(filter);
         res.json({
             projects,
-            pagination: {
-                total,
-                page: pageNum,
-                limit: limitNum,
-                pages: limitNum > 0 ? Math.ceil(total / limitNum) : 1
-            }
+            total
         });
     }
     catch (error) {

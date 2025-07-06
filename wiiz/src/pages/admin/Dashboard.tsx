@@ -64,12 +64,12 @@ const AdminDashboard: React.FC = () => {
       const now = new Date();
       const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-      const recentProjects = projects.filter(p => new Date(p.createdAt) > lastWeek).length;
+      const recentProjects = projects.projects.filter(p => new Date(p.createdAt) > lastWeek).length;
       const recentEmails = emails.filter(e => new Date(e.createdAt) > lastWeek).length;
 
       setStats({
-        totalProjects: projects.length,
-        publishedProjects: projects.filter(p => p.status === 'published').length,
+        totalProjects: projects.projects.length,
+        publishedProjects: projects.projects.filter(p => p.status === 'published').length,
         totalTechStack: techStack.length,
         totalEmails: emails.length,
         unreadEmails: emails.filter(e => e.status === 'unread').length,

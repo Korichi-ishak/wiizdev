@@ -3,13 +3,11 @@ import {
   motion,
   useScroll,
   useTransform,
-  useSpring,
-  useMotionValue,
   useAnimationFrame,
 } from "framer-motion";
 
 import { GooeyText } from "./gooey-text-morphing";
-import { SplashCursor } from "./splash-cursor";
+import { useLoadingContext } from "../../contexts/LoadingContext";
 
 // Floating particles component
 const FloatingParticles = () => {
@@ -102,12 +100,16 @@ const GeometricShapes = ({ scrollYProgress }: { scrollYProgress: any }) => {
 
 export const HeroParallax = () => {
   const ref = useRef(null);
+  const { setIsGooeyTextReady } = useLoadingContext();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  const springConfig = { stiffness: 300, damping: 30, bounce: 100 };
+  const handleGooeyTextReady = () => {
+    setIsGooeyTextReady(true);
+  };
+
 
   // Multiple parallax layers
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
@@ -117,29 +119,12 @@ export const HeroParallax = () => {
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.3]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1, 1.05, 1.1]);
 
-  // Mouse movement effect
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { innerWidth, innerHeight } = window;
-    mouseX.set((clientX - innerWidth / 2) / 50);
-    mouseY.set((clientY - innerHeight / 2) / 50);
-  };
-
-  const mouseXSpring = useSpring(mouseX, springConfig);
-  const mouseYSpring = useSpring(mouseY, springConfig);
 
   return (
     <div
       ref={ref}
       className="relative h-screen w-full overflow-hidden"
-      onMouseMove={handleMouseMove}
     >
-      {/* Fluid background effect */}
-      <SplashCursor />
-      
       {/* Animated background gradient */}
       <motion.div 
         className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900"
@@ -176,8 +161,6 @@ export const HeroParallax = () => {
         style={{
           opacity,
           scale,
-          x: mouseXSpring,
-          y: mouseYSpring,
         }}
       >
         <div className="text-center max-w-6xl mx-auto px-4">
@@ -210,6 +193,7 @@ export const HeroParallax = () => {
               cooldownTime={1}
               className="h-[120px] md:h-[180px] flex items-center justify-center"
               textClassName="font-bold bg-gradient-to-r from-secondary via-primary to-secondary bg-clip-text text-transparent text-5xl md:text-8xl leading-tight"
+              onReady={handleGooeyTextReady}
             />
           </motion.div>
 

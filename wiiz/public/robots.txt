@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+
+# Disallow admin pages and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /private/
+
+# Allow specific public pages
+Allow: /projects
+Allow: /about
+Allow: /contact
+Allow: /tech-stack
+Allow: /all-projects
+
+# Sitemap location
+Sitemap: https://wiizdev.com/sitemap.xml
+
+# Crawl delay (optional) - 1 second between requests
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: facebookexternalhit
+Allow: /

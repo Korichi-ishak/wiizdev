@@ -9,6 +9,7 @@ interface GooeyTextProps {
   cooldownTime?: number;
   className?: string;
   textClassName?: string;
+  onReady?: () => void;
 }
 
 export function GooeyText({
@@ -16,35 +17,50 @@ export function GooeyText({
   morphTime = 1,
   cooldownTime = 0.25,
   className,
-  textClassName
+  textClassName,
+  onReady
 }: GooeyTextProps) {
   const text1Ref = React.useRef<HTMLSpanElement>(null);
   const text2Ref = React.useRef<HTMLSpanElement>(null);
+  const animationId = React.useRef<number>();
 
   React.useEffect(() => {
     let textIndex = texts.length - 1;
-    let time = new Date();
+    let lastTime = performance.now();
     let morph = 0;
     let cooldown = cooldownTime;
+    let isReady = false;
 
     const setMorph = (fraction: number) => {
-      if (text1Ref.current && text2Ref.current) {
-        text2Ref.current.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-        text2Ref.current.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+      const text1 = text1Ref.current;
+      const text2 = text2Ref.current;
+      
+      if (text1 && text2) {
+        const blurValue = Math.min(8 / fraction - 8, 100);
+        const opacityValue = Math.pow(fraction, 0.4);
+        
+        text2.style.filter = `blur(${blurValue}px)`;
+        text2.style.opacity = `${opacityValue}`;
 
-        fraction = 1 - fraction;
-        text1Ref.current.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-        text1Ref.current.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+        const reverseFraction = 1 - fraction;
+        const reverseBlurValue = Math.min(8 / reverseFraction - 8, 100);
+        const reverseOpacityValue = Math.pow(reverseFraction, 0.4);
+        
+        text1.style.filter = `blur(${reverseBlurValue}px)`;
+        text1.style.opacity = `${reverseOpacityValue}`;
       }
     };
 
     const doCooldown = () => {
       morph = 0;
-      if (text1Ref.current && text2Ref.current) {
-        text2Ref.current.style.filter = "";
-        text2Ref.current.style.opacity = "100%";
-        text1Ref.current.style.filter = "";
-        text1Ref.current.style.opacity = "0%";
+      const text1 = text1Ref.current;
+      const text2 = text2Ref.current;
+      
+      if (text1 && text2) {
+        text2.style.filter = "";
+        text2.style.opacity = "1";
+        text1.style.filter = "";
+        text1.style.opacity = "0";
       }
     };
 
@@ -61,35 +77,45 @@ export function GooeyText({
       setMorph(fraction);
     };
 
-    function animate() {
-      requestAnimationFrame(animate);
-      const newTime = new Date();
-      const shouldIncrementIndex = cooldown > 0;
-      const dt = (newTime.getTime() - time.getTime()) / 1000;
-      time = newTime;
+    function animate(currentTime: number) {
+      const dt = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
 
       cooldown -= dt;
 
       if (cooldown <= 0) {
-        if (shouldIncrementIndex) {
+        if (morph === 0) {
           textIndex = (textIndex + 1) % texts.length;
-          if (text1Ref.current && text2Ref.current) {
-            text1Ref.current.textContent = texts[textIndex % texts.length];
-            text2Ref.current.textContent = texts[(textIndex + 1) % texts.length];
+          const text1 = text1Ref.current;
+          const text2 = text2Ref.current;
+          
+          if (text1 && text2) {
+            text1.textContent = texts[textIndex % texts.length];
+            text2.textContent = texts[(textIndex + 1) % texts.length];
+            
+            // Signal ready after first text is set
+            if (!isReady && onReady) {
+              isReady = true;
+              setTimeout(onReady, 100); // Small delay to ensure text is rendered
+            }
           }
         }
         doMorph();
       } else {
         doCooldown();
       }
+
+      animationId.current = requestAnimationFrame(animate);
     }
 
-    animate();
+    animationId.current = requestAnimationFrame(animate);
 
     return () => {
-      // Cleanup function if needed
+      if (animationId.current) {
+        cancelAnimationFrame(animationId.current);
+      }
     };
-  }, [texts, morphTime, cooldownTime]);
+  }, [texts, morphTime, cooldownTime, onReady]);
 
   return (
     <div className={cn("relative", className)}>

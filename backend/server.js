@@ -61,10 +61,20 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(helmet());
+
+// Correction CORS dynamique depuis .env
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
+  : [];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://wiizdev.com', 'https://www.wiizdev.com']
-    : ['http://localhost:3000', 'http://localhost:5173'],
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(morgan('combined'));
@@ -134,4 +144,4 @@ app.listen(PORT, () => {
   console.log('\n✨ Ready to accept requests!\n');
 });
 
-module.exports = app; 
+module.exports = app;

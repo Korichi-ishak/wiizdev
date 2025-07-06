@@ -1,14 +1,140 @@
 import { motion } from 'framer-motion';
+import { ExternalLink, Calendar, Eye } from 'lucide-react';
 import { HeroParallaxDemo } from '../components/HeroParallaxDemo';
 import { Boxes } from '../components/ui/background-boxes';
-import { InteractiveProjectShowcase } from '../components/ui/interactive-project-showcase';
 import { DemoOne } from '../components/ui/demo';
+import Testimonials from '../components/ui/testimonials';
+import SEO from '../components/SEO';
 import React, { useState, useEffect } from 'react';
 import { techStackApi, type TechStack } from '../services/api';
+import { useProjects } from '../hooks/useProjects';
+
+// Tech Stack Carousel Component
+const TechStackCarousel: React.FC<{ techStack: TechStack[] }> = ({ techStack }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // Triple the techStack array for seamless infinite scroll
+  const extendedTechStack = [...techStack, ...techStack, ...techStack];
+  const cardWidth = 200; // Width + gap
+  const totalWidth = techStack.length * cardWidth;
+
+  return (
+    <motion.div
+      className="relative overflow-hidden"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      viewport={{ once: true }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative">
+        <motion.div
+          className="flex gap-6"
+          animate={{
+            x: isHovered ? undefined : [-totalWidth, 0]
+          }}
+          transition={{
+            x: {
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: totalWidth / 60, // Faster speed - doubled from /30 to /60
+              ease: "linear",
+            }
+          }}
+          style={{
+            width: `${extendedTechStack.length * cardWidth}px`,
+            willChange: "transform" // Optimize for smooth animations
+          }}
+        >
+          {extendedTechStack.map((tech, index) => (
+            <motion.div
+              key={`${tech._id}-${index}`}
+              className="group relative text-center p-6 bg-gray-50 dark:bg-secondary-800 rounded-xl hover:bg-gray-100 dark:hover:bg-secondary-700 transition-all duration-200 hover:shadow-lg hover:shadow-primary/10 flex-shrink-0 w-48"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: (index % techStack.length) * 0.02 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.05, y: -8 }}
+              style={{ willChange: "transform" }}
+            >
+              <motion.div
+                className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:bg-primary/20 transition-colors overflow-hidden"
+                whileHover={{ scale: 1.15, rotate: 10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                style={{ willChange: "transform" }}
+              >
+                {(() => {
+                  const imageUrl = tech.logoUrl || tech.icon;
+                  const isImageUrl = imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/'));
+                  
+                  if (isImageUrl) {
+                    return (
+                      <img 
+                        src={imageUrl} 
+                        alt={`${tech.name} logo`}
+                        className="w-8 h-8 object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (nextSibling) {
+                            nextSibling.style.display = 'block';
+                          }
+                        }}
+                      />
+                    );
+                  }
+                  return null;
+                })()}
+                <span 
+                  className={`text-primary text-2xl ${(() => {
+                    const imageUrl = tech.logoUrl || tech.icon;
+                    const isImageUrl = imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/'));
+                    return isImageUrl ? 'hidden' : 'block';
+                  })()}`}
+                >
+                  {tech.icon && !tech.icon.startsWith('http') && !tech.icon.startsWith('/') ? tech.icon : '⚡'}
+                </span>
+              </motion.div>
+              <motion.h3 
+                className="text-lg font-semibold text-secondary dark:text-white mb-2 group-hover:text-primary transition-colors"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
+              >
+                {tech.name}
+              </motion.h3>
+              <motion.p 
+                className="text-sm text-gray-600 dark:text-gray-300 capitalize"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+              >
+                {tech.category}
+              </motion.p>
+              
+              {/* Hover tooltip */}
+              {tech.description && (
+                <motion.div 
+                  className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-secondary dark:bg-white text-white dark:text-secondary text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10 max-w-xs"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileHover={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {tech.description.length > 60 ? `${tech.description.substring(0, 60)}...` : tech.description}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-secondary dark:border-t-white"></div>
+                </motion.div>
+              )}
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
 
 const Home: React.FC = () => {
   const [techStack, setTechStack] = useState<TechStack[]>([]);
   const [techStackLoading, setTechStackLoading] = useState(true);
+  const { projects, loading } = useProjects(4);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -37,6 +163,12 @@ const Home: React.FC = () => {
 
   return (
     <div className="w-full">
+      <SEO 
+        title="Wiiz Dev - Développement Web & Mobile | Solutions Digitales Innovantes"
+        description="Transformez votre vision en réalité digitale avec Wiiz Dev. Développement d'applications web et mobile sur mesure, e-commerce, et solutions innovantes. Contact gratuit."
+        keywords="développement web, application mobile, React, Node.js, MongoDB, e-commerce, site web, développeur, solutions digitales, agence web"
+        url="https://wiizdev.com"
+      />
       {/* Custom CSS for advanced animations */}
       <style>{`
         @keyframes float {
@@ -214,10 +346,200 @@ Why Choose Wiiz Dev
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="relative z-10 bg-white dark:bg-secondary-900 py-20">
+      {/* Projects Section - Enhanced Design */}
+      <section id="projects" className="relative z-10 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-secondary-900 dark:to-gray-900 py-20">
         <div className="container mx-auto px-4">
-          <InteractiveProjectShowcase />
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <motion.span 
+              className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6"
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              Our Latest Work
+            </motion.span>
+            <h2 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-8">
+              Featured Projects
+            </h2>
+            <p className="text-xl text-secondary/70 dark:text-secondary-200 max-w-3xl mx-auto mb-8">
+              Discover our latest innovative digital solutions and creative projects that showcase our expertise.
+            </p>
+          </motion.div>
+
+          {/* Projects Grid */}
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <motion.div
+                  key={index}
+                  className="group bg-white dark:bg-secondary-800 rounded-2xl overflow-hidden shadow-lg border border-gray-200 dark:border-secondary-700"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                >
+                  <div className="aspect-video bg-gray-200 dark:bg-secondary-700 animate-pulse" />
+                  <div className="p-6">
+                    <div className="h-6 bg-gray-200 dark:bg-secondary-700 rounded animate-pulse mb-3" />
+                    <div className="space-y-2 mb-4">
+                      <div className="h-4 bg-gray-200 dark:bg-secondary-700 rounded animate-pulse" />
+                      <div className="h-4 bg-gray-200 dark:bg-secondary-700 rounded animate-pulse w-3/4" />
+                    </div>
+                    <div className="flex gap-2">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="h-6 bg-gray-200 dark:bg-secondary-700 rounded-full animate-pulse w-16" />
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+              {projects.slice(0, 4).map((project, index) => (
+                <motion.div
+                  key={project._id}
+                  className="group bg-white dark:bg-secondary-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200 dark:border-secondary-700 backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  whileHover={{ y: -12, scale: 1.02 }}
+                  viewport={{ once: true }}
+                >
+                  {/* Enhanced Image Container */}
+                  <div className="aspect-video bg-gradient-to-br from-primary/10 to-purple-600/10 relative overflow-hidden">
+                    <img 
+                      src={project.thumbnail || '/placeholder.jpg'} 
+                      alt={project.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {/* Category Badge */}
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-primary/90 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm font-medium shadow-lg">
+                        {project.category}
+                      </span>
+                    </div>
+                    
+                    {/* Enhanced hover overlay with actions */}
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                      <motion.div 
+                        className="bg-white/90 dark:bg-secondary-800/90 backdrop-blur-sm rounded-full p-2 shadow-lg cursor-pointer"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <ExternalLink className="h-4 w-4 text-primary" />
+                      </motion.div>
+                    </div>
+                    
+                    {/* Live indicator */}
+                    <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                      <div className="flex items-center gap-2 bg-green-500/90 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                        Live
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Enhanced Content */}
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-xl font-bold text-secondary dark:text-white group-hover:text-primary transition-colors duration-300">
+                        {project.title}
+                      </h3>
+                      <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                        <Calendar className="h-4 w-4" />
+                        {new Date(project.createdAt).getFullYear()}
+                      </div>
+                    </div>
+                    
+                    <p className="text-secondary/70 dark:text-secondary-200 mb-4 line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    {/* Enhanced Tech Stack */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.techStack.slice(0, 3).map((tech, techIndex) => (
+                        <motion.span 
+                          key={tech} 
+                          className="text-xs px-3 py-1 bg-gradient-to-r from-primary/10 to-purple-600/10 text-primary border border-primary/20 rounded-full hover:bg-primary/20 transition-all duration-200 cursor-pointer"
+                          whileHover={{ scale: 1.05, y: -2 }}
+                          initial={{ opacity: 0, y: 10 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 + techIndex * 0.05 }}
+                          viewport={{ once: true }}
+                        >
+                          {tech}
+                        </motion.span>
+                      ))}
+                      {project.techStack.length > 3 && (
+                        <span className="text-xs px-3 py-1 bg-gray-100 dark:bg-secondary-700 text-secondary/60 dark:text-secondary-400 rounded-full border border-gray-200 dark:border-secondary-600">
+                          +{project.techStack.length - 3} more
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Enhanced CTA */}
+                    <div className="flex items-center justify-between">
+                      <motion.a 
+                        href={project.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-primary font-semibold hover:text-primary/80 transition-all duration-200 group/link"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        View Project 
+                        <ExternalLink className="ml-2 h-4 w-4 group-hover/link:translate-x-1 group-hover/link:-translate-y-0.5 transition-transform duration-200" />
+                      </motion.a>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                        <motion.div 
+                          className="flex items-center gap-1 hover:text-primary transition-colors duration-200 cursor-pointer"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          <Eye className="h-3 w-3" />
+                          <span>Live Demo</span>
+                        </motion.div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+
+          {/* View All Projects CTA */}
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <motion.a
+              href="/all-projects"
+              className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View All Projects
+              <motion.div
+                className="ml-2"
+                animate={{ x: [0, 4, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              >
+                →
+              </motion.div>
+            </motion.a>
+          </motion.div>
         </div>
       </section>
 
@@ -248,90 +570,19 @@ Why Choose Wiiz Dev
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
                 We don't chase trends – we master proven technologies that power the world's most successful applications. Every tool in our arsenal has been battle-tested in real-world scenarios.
               </p>
-              <p className="text-lg text-gray-500 dark:text-gray-400">
+              <p className="text-lg text-gray-700 dark:text-gray-300">
                 Your project deserves stability, performance, and reliability. That's why we choose technologies backed by thriving communities, comprehensive documentation, and enterprise-grade support.
               </p>
             </div>
           </motion.div>
 
-          {/* Tech Stack Grid */}
+          {/* Tech Stack Carousel */}
           {techStackLoading ? (
             <div className="flex justify-center items-center py-16">
               <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
             </div>
           ) : techStack.length > 0 ? (
-            <motion.div 
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-            >
-              {techStack.map((tech, index) => (
-                <motion.div
-                  key={tech._id}
-                  className="group relative text-center p-6 bg-gray-50 dark:bg-secondary-800 rounded-xl hover:bg-gray-100 dark:hover:bg-secondary-700 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.05 }}
-                  viewport={{ once: true }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                >
-                  <motion.div
-                    className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto group-hover:bg-primary/20 transition-colors overflow-hidden"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {(() => {
-                      const imageUrl = tech.logoUrl || tech.icon;
-                      const isImageUrl = imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/'));
-                      
-                      if (isImageUrl) {
-                        return (
-                          <img 
-                            src={imageUrl} 
-                            alt={`${tech.name} logo`}
-                            className="w-8 h-8 object-contain"
-                            onError={(e) => {
-                              // Fallback to icon text if image fails to load
-                              e.currentTarget.style.display = 'none';
-                              const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                              if (nextSibling) {
-                                nextSibling.style.display = 'block';
-                              }
-                            }}
-                          />
-                        );
-                      }
-                      return null;
-                    })()}
-                    <span 
-                      className={`text-primary text-2xl ${(() => {
-                        const imageUrl = tech.logoUrl || tech.icon;
-                        const isImageUrl = imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('/'));
-                        return isImageUrl ? 'hidden' : 'block';
-                      })()}`}
-                    >
-                      {tech.icon && !tech.icon.startsWith('http') && !tech.icon.startsWith('/') ? tech.icon : '⚡'}
-                    </span>
-                  </motion.div>
-                  <h3 className="text-lg font-semibold text-secondary dark:text-white mb-2 group-hover:text-primary transition-colors">
-                    {tech.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 capitalize">
-                    {tech.category}
-                  </p>
-                  
-                  {/* Hover tooltip */}
-                  {tech.description && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-secondary dark:bg-white text-white dark:text-secondary text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10 max-w-xs">
-                      {tech.description.length > 60 ? `${tech.description.substring(0, 60)}...` : tech.description}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-secondary dark:border-t-white"></div>
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </motion.div>
+            <TechStackCarousel techStack={techStack} />
           ) : (
             <div className="text-center py-16">
               <motion.div
@@ -440,10 +691,10 @@ Why Choose Wiiz Dev
               </h2>
               <div className="w-24 h-1 bg-primary mx-auto mb-6" />
               <div className="max-w-3xl mx-auto">
-                <p className="text-xl text-secondary/80 dark:text-secondary-300 mb-4">
+                <p className="text-xl text-gray-700 dark:text-gray-200 mb-4">
                   Stop wondering "what if" and start building what works. Every successful digital transformation begins with a single conversation.
                 </p>
-                <p className="text-lg text-secondary/60 dark:text-secondary-400">
+                <p className="text-lg text-gray-600 dark:text-gray-300">
                   Whether you're launching your first app or scaling your enterprise, we'll craft a solution that doesn't just meet your needs – it accelerates your success.
                 </p>
               </div>
@@ -480,7 +731,7 @@ Why Choose Wiiz Dev
                       <div className="flex items-center space-x-4">
                         <div className="w-1 h-12 bg-primary group-hover:h-16 transition-all duration-300" />
                         <div>
-                          <p className="text-sm text-secondary/60 dark:text-secondary-400 uppercase tracking-wider">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                             Email
                           </p>
                           <p className="text-lg font-semibold text-secondary dark:text-white group-hover:text-primary transition-colors">
@@ -499,7 +750,7 @@ Why Choose Wiiz Dev
                       <div className="flex items-center space-x-4">
                         <div className="w-1 h-12 bg-secondary group-hover:h-16 transition-all duration-300" />
                         <div>
-                          <p className="text-sm text-secondary/60 dark:text-secondary-400 uppercase tracking-wider">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                             Phone
                           </p>
                           <p className="text-lg font-semibold text-secondary dark:text-white group-hover:text-primary transition-colors">
@@ -512,7 +763,7 @@ Why Choose Wiiz Dev
                     <div className="flex items-center space-x-4">
                       <div className="w-1 h-12 bg-primary/50" />
                       <div>
-                        <p className="text-sm text-secondary/60 dark:text-secondary-400 uppercase tracking-wider">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">
                           Response Time
                         </p>
                         <p className="text-lg font-semibold text-secondary dark:text-white">
@@ -528,7 +779,7 @@ Why Choose Wiiz Dev
                   <h3 className="text-xl font-bold text-secondary dark:text-white mb-6">
                     Business Hours
                   </h3>
-                  <div className="space-y-2 text-secondary/70 dark:text-secondary-300">
+                  <div className="space-y-2 text-gray-600 dark:text-gray-300">
                     <div className="flex justify-between">
                       <span>Monday - Friday</span>
                       <span className="font-medium">8:00 AM - 6:00 PM</span>
@@ -549,10 +800,10 @@ Why Choose Wiiz Dev
                   <h3 className="text-xl font-bold text-secondary dark:text-white mb-4">
                     Location
                   </h3>
-                  <div className="text-secondary/70 dark:text-secondary-300 leading-relaxed">
+                  <div className="text-gray-600 dark:text-gray-300 leading-relaxed">
                     <p>Annaba</p>
                     <p>Algeria</p>
-                    <p className="text-sm mt-2 text-secondary/50 dark:text-secondary-400">
+                    <p className="text-sm mt-2 text-gray-500 dark:text-gray-400">
                       Remote consultations available worldwide
                     </p>
                   </div>
@@ -580,7 +831,7 @@ Why Choose Wiiz Dev
                     <h3 className="text-3xl font-bold text-secondary dark:text-white mb-3">
                       Let's Build Your Success Story
                     </h3>
-                    <p className="text-secondary/70 dark:text-secondary-300">
+                    <p className="text-gray-600 dark:text-gray-300">
                       Share your vision, challenges, and goals. We'll respond within 24 hours with a strategic roadmap to turn your ideas into profitable reality.
                     </p>
                   </div>
@@ -667,7 +918,7 @@ Why Choose Wiiz Dev
                         placeholder="Tell us about your project, goals, timeline, and any specific requirements..."
                         required
                       />
-                      <p className="text-xs text-secondary/60 dark:text-secondary-400">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         Please provide as much detail as possible to help us understand your needs.
                       </p>
                     </div>
@@ -682,7 +933,7 @@ Why Choose Wiiz Dev
                       >
                         Start My Digital Transformation
                       </motion.button>
-                      <p className="text-center text-sm text-secondary/60 dark:text-secondary-400 mt-3">
+                      <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3">
                         Strategic consultation & project roadmap within 24 hours
                       </p>
                     </div>
@@ -698,6 +949,10 @@ Why Choose Wiiz Dev
       <section className="relative z-10">
         <DemoOne />
       </section>
+
+      {/* Testimonials Section */}
+      <Testimonials />
+
     </div>
   );
 };

@@ -37,7 +37,7 @@ const AdminProjects: React.FC = () => {
   const loadProjects = async () => {
     try {
       const data = await projectsApi.getAll();
-      setProjects(data);
+      setProjects(data.projects || []);
     } catch (error) {
       console.error('Failed to load projects:', error);
     } finally {

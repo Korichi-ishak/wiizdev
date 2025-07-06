@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 
 export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
-  const rows = new Array(150).fill(1);
-  const cols = new Array(100).fill(1);
+  const rows = new Array(80).fill(1);  // Increased to cover background properly
+  const cols = new Array(60).fill(1);  // Increased to cover background properly
   
   // Using website color palette
   const colors = [
@@ -38,21 +38,18 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
       {rows.map((_, i) => (
         <motion.div
           key={`row` + i}
-          className="w-16 h-8 border-l border-gray-300 dark:border-gray-700 relative"
+          className="w-20 h-12 border-l border-gray-300 dark:border-gray-700 relative"
         >
           {cols.map((_, j) => (
             <motion.div
               whileHover={{
                 backgroundColor: getRandomColor(),
-                transition: { duration: 0 },
-              }}
-              animate={{
-                transition: { duration: 2 },
+                transition: { duration: 0.2 },
               }}
               key={`col` + j}
-              className="w-16 h-8 border-r border-t border-gray-300 dark:border-gray-700 relative"
+              className="w-20 h-12 border-r border-t border-gray-300 dark:border-gray-700 relative"
             >
-              {j % 2 === 0 && i % 2 === 0 ? (
+              {j % 4 === 0 && i % 4 === 0 ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

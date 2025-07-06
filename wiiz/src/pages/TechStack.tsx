@@ -58,7 +58,7 @@ const TechCard = ({ tech, index }: { tech: Technology; index: number }) => {
 
         {/* Description */}
         <div className="flex-grow min-h-0 mb-4">
-          <p className="text-secondary/70 dark:text-secondary-200 text-sm leading-relaxed h-full overflow-y-auto">
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed h-full overflow-y-auto">
             {tech.description}
           </p>
         </div>
@@ -153,7 +153,7 @@ const TechStack: React.FC = () => {
           </motion.h1>
           
           <motion.p 
-            className="text-xl text-secondary/70 dark:text-secondary-200 max-w-3xl mx-auto mb-12"
+            className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -181,7 +181,7 @@ const TechStack: React.FC = () => {
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   activeCategory === category
                     ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                    : 'bg-white dark:bg-secondary-800 text-secondary/70 dark:text-secondary-300 hover:bg-primary/10 border border-primary/20 dark:border-secondary-600'
+                    : 'bg-white dark:bg-secondary-800 text-gray-600 dark:text-gray-300 hover:bg-primary/10 border border-primary/20 dark:border-secondary-600'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -219,7 +219,7 @@ const TechStack: React.FC = () => {
 
         {filteredTechs.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-xl text-secondary/60 dark:text-secondary-400">
+            <p className="text-xl text-gray-500 dark:text-gray-400">
               No technologies found in this category.
             </p>
           </div>
@@ -246,7 +246,7 @@ const TechStack: React.FC = () => {
               transition={{ duration: 0.3 }}
             >
               <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-              <div className="text-secondary/60 dark:text-secondary-400 font-medium">{stat.label}</div>
+              <div className="text-gray-600 dark:text-gray-400 font-medium">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>

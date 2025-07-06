@@ -5,12 +5,12 @@ interface LogoProps {
   className?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ className = "w-8 h-8" }) => {
+const Logo: React.FC<LogoProps> = ({ className = "w-10 h-10" }) => {
   const { theme } = useThemeContext();
   
   const logoSrc = theme === 'dark' 
-    ? 'https://storage.googleapis.com/wiiz/Logo.svg'
-    : 'https://storage.googleapis.com/wiiz/fordarkmode.svg'
+    ? 'https://storage.googleapis.com/wiiz/fordarkmode.svg'
+    : 'https://storage.googleapis.com/wiiz/Logo.svg'
 
 
   return (

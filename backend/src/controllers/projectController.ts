@@ -22,12 +22,7 @@ export const getProjects = async (req: Request, res: Response): Promise<void> =>
 
     res.json({
       projects,
-      pagination: {
-        total,
-        page: pageNum,
-        limit: limitNum,
-        pages: limitNum > 0 ? Math.ceil(total / limitNum) : 1
-      }
+      total
     });
   } catch (error) {
     console.error('Get projects error:', error);

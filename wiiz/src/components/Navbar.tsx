@@ -1,19 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import Logo from './Logo';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useThemeContext } from '../hooks/useThemeContext';
 
 const Navbar: React.FC = () => {
   const { theme, toggleTheme } = useThemeContext();
   const [activeSection, setActiveSection] = useState('home');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHomePage = location.pathname === '/';
   
-  const navItems = [
-    { name: 'Home', id: 'home' },
-    { name: 'About', id: 'about' },
-    { name: 'Projects', id: 'projects' },
-    { name: 'Tech Stack', id: 'tech-stack' },
-    { name: 'Contact', id: 'contact' }
-  ];
+  const navItems = useMemo(() => [
+    { name: 'Home', id: 'home', path: '/' },
+    { name: 'About', id: 'about', path: '/#about' },
+    { name: 'Projects', id: 'projects', path: '/all-projects' },
+    { name: 'Tech Stack', id: 'tech-stack', path: '/#tech-stack' },
+    { name: 'Contact', id: 'contact', path: '/#contact' }
+  ], []);
+
+  const handleNavigation = (item: { name: string; id: string; path: string }) => {
+    if (item.path.startsWith('/#')) {
+      // Navigate to home page with section
+      if (isHomePage) {
+        // Already on home page, just scroll
+        const sectionId = item.path.substring(2);
+        scrollToSection(sectionId);
+      } else {
+        // Navigate to home page first, then scroll after navigation
+        navigate('/');
+        setTimeout(() => {
+          const sectionId = item.path.substring(2);
+          scrollToSection(sectionId);
+        }, 100);
+      }
+    } else {
+      // Direct navigation
+      navigate(item.path);
+    }
+  };
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -25,11 +49,23 @@ const Navbar: React.FC = () => {
     }
   };
 
+  const getActiveItem = () => {
+    if (location.pathname === '/') return 'home';
+    if (location.pathname === '/all-projects') return 'projects';
+    if (location.pathname === '/about') return 'about';
+    if (location.pathname === '/contact') return 'contact';
+    if (location.pathname === '/tech-stack') return 'tech-stack';
+    return activeSection;
+  };
+
   const isActive = (sectionId: string) => {
-    return activeSection === sectionId;
+    return getActiveItem() === sectionId;
   };
 
   useEffect(() => {
+    // Only set up scroll listener on home page
+    if (!isHomePage) return;
+
     const handleScroll = () => {
       const sections = navItems.map(item => item.id);
       const scrollPosition = window.scrollY + 100;
@@ -47,7 +83,7 @@ const Navbar: React.FC = () => {
     handleScroll(); // Call once to set initial active section
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage, navItems]);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-8">
@@ -58,21 +94,13 @@ const Navbar: React.FC = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="bg-secondary/95 dark:bg-white/95 backdrop-blur-md rounded-full px-6 py-3 border border-white/10 dark:border-secondary/10 shadow-lg">
-          <div className="flex items-center space-x-6">
-            {/* Logo */}
-            <button 
-              onClick={() => scrollToSection('home')} 
-              className="flex items-center"
-            >
-              <Logo className="w-8 h-8" />
-            </button>
-
+          <div className="flex items-center space-x-4">
             {/* Navigation Items */}
             <div className="flex items-center space-x-1">
               {navItems.map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => scrollToSection(item.id)}
+                  onClick={() => handleNavigation(item)}
                   className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-full ${
                     isActive(item.id)
                       ? 'text-white dark:text-secondary bg-primary/20'
@@ -89,7 +117,9 @@ const Navbar: React.FC = () => {
                   )}
                 </button>
               ))}
-            </div>            {/* Theme Toggle Button */}
+            </div>
+            
+            {/* Theme Toggle Button */}
             <motion.button
               onClick={toggleTheme}
               whileHover={{ scale: 1.05 }}

@@ -77,9 +77,16 @@ export const authApi = {
 };
 
 export const projectsApi = {
-  getAll: async (): Promise<Project[]> => {
-    const response = await api.get('/projects');
-    return response.data.projects || response.data;
+  getAll: async (params?: { limit?: number; page?: number }): Promise<{ projects: Project[]; total: number }> => {
+    console.log('📡 Making API call to /projects with params:', params);
+    try {
+      const response = await api.get('/projects', { params });
+      console.log('✅ API Response received:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ API Error:', error);
+      throw error;
+    }
   },
   getById: async (id: string): Promise<Project> => {
     const response = await api.get(`/projects/${id}`);

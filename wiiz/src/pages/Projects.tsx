@@ -1,47 +1,107 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { projectsApi, type Project } from '../services/api';
+import React, { useState, useMemo, useCallback, useTransition } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search } from 'lucide-react';
+import { useProjects } from '../hooks/useProjects';
+import ProjectFilters from '../components/ProjectFilters';
+import ProjectCard from '../components/ProjectCard';
+import ProjectSkeleton from '../components/ProjectSkeleton';
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { projects, loading, hasMore, loadMore } = useProjects(12);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'title'>('newest');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [showFilters, setShowFilters] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    fetchProjects();
+  // Optimized search handler with debouncing via transition
+  const handleSearchChange = useCallback((term: string) => {
+    startTransition(() => {
+      setSearchTerm(term);
+    });
   }, []);
 
-  const fetchProjects = async () => {
-    try {
-      const data = await projectsApi.getAll();
-      const publishedProjects = data.filter(project => project.status === 'published');
-      setProjects(publishedProjects);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleCategoryChange = useCallback((category: string) => {
+    startTransition(() => {
+      setSelectedCategory(category);
+    });
+  }, []);
 
-  const categories = ['all', ...Array.from(new Set(projects.map(p => p.category)))];
-  const filteredProjects = selectedCategory === 'all' 
-    ? projects 
-    : projects.filter(p => p.category === selectedCategory);
+  const handleSortChange = useCallback((sort: 'newest' | 'oldest' | 'title') => {
+    startTransition(() => {
+      setSortBy(sort);
+    });
+  }, []);
 
-  if (loading) {
+  // Optimized filtering and sorting with useMemo
+  const { categories, filteredProjects } = useMemo(() => {
+    const cats = ['all', ...Array.from(new Set(projects.map(p => p.category)))];
+    
+    const filtered = projects.filter(project => {
+      const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
+      const matchesSearch = searchTerm === '' || 
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.techStack.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      return matchesCategory && matchesSearch;
+    });
+
+    // Sort projects
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case 'oldest':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case 'title':
+          return a.title.localeCompare(b.title);
+        default:
+          return 0;
+      }
+    });
+
+    return { categories: cats, filteredProjects: filtered };
+  }, [projects, selectedCategory, searchTerm, sortBy]);
+
+  if (loading && projects.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent"></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-secondary-900 dark:to-gray-900 py-20">
+        <div className="container mx-auto px-4">
+          {/* Header Section */}
+          <div className="text-center mb-16">
+            <motion.h1 
+              className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              Our Projects
+            </motion.h1>
+            <motion.p 
+              className="text-xl text-secondary/70 dark:text-secondary-200 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              Discover our portfolio of innovative digital solutions and creative projects.
+            </motion.p>
+          </div>
+
+          <ProjectSkeleton viewMode={viewMode} count={9} />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-secondary-900 py-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-secondary-900 dark:to-gray-900 py-20">
       <div className="container mx-auto px-4">
+        {/* Header Section */}
         <div className="text-center mb-16">
           <motion.h1 
-            className="text-4xl md:text-6xl font-bold text-secondary dark:text-white mb-6"
+            className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -58,84 +118,152 @@ const Projects: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Category Filter */}
-        <motion.div 
-          className="flex flex-wrap justify-center gap-4 mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                selectedCategory === category
-                  ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                  : 'bg-white dark:bg-secondary-800 text-secondary/70 dark:text-secondary-300 hover:bg-primary/10 border border-primary/20 dark:border-secondary-600'
-              }`}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
-        </motion.div>
+        {/* Enhanced Filter Controls */}
+        <ProjectFilters
+          searchTerm={searchTerm}
+          setSearchTerm={handleSearchChange}
+          sortBy={sortBy}
+          setSortBy={handleSortChange}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          showFilters={showFilters}
+          setShowFilters={setShowFilters}
+          categories={categories}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={handleCategoryChange}
+          projects={projects}
+          filteredCount={filteredProjects.length}
+          isPending={isPending}
+        />
 
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
-            <motion.div
-              key={project._id}
-              className="bg-white dark:bg-secondary-800 rounded-3xl overflow-hidden border border-primary/20 dark:border-secondary-600 hover:border-primary/40 transition-all duration-300 group"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={{ y: -8 }}
+        {/* Enhanced Projects Grid/List with optimized animations */}
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {isPending && (
+            <motion.div 
+              className="absolute inset-0 bg-white/50 dark:bg-secondary-900/50 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
             >
-              <div className="aspect-video bg-gray-200 dark:bg-secondary-700 relative overflow-hidden">
-                <img 
-                  src={project.thumbnail || '/placeholder.jpg'} 
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-secondary dark:text-white mb-3 group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-secondary/70 dark:text-secondary-200 mb-4 line-clamp-3">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.techStack.slice(0, 3).map(tech => (
-                    <span key={tech} className="text-xs px-3 py-1 bg-primary/10 text-primary rounded-full">
-                      {tech}
-                    </span>
-                  ))}
-                  {project.techStack.length > 3 && (
-                    <span className="text-xs px-3 py-1 bg-gray-100 dark:bg-secondary-700 text-secondary/60 dark:text-secondary-400 rounded-full">
-                      +{project.techStack.length - 3}
-                    </span>
-                  )}
-                </div>
-                <a 
-                  href={project.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary font-medium hover:underline"
-                >
-                  View Project →
-                </a>
+              <div className="bg-white dark:bg-secondary-800 rounded-xl p-6 shadow-lg flex items-center gap-3">
+                <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
+                <span className="text-secondary dark:text-white font-medium">Filtering projects...</span>
               </div>
             </motion.div>
-          ))}
-        </div>
+          )}
+          
+          <AnimatePresence mode="wait">
+            {viewMode === 'grid' ? (
+              <motion.div 
+                key="grid"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, staggerChildren: 0.1 }}
+                layout
+              >
+                <AnimatePresence>
+                  {filteredProjects.map((project, index) => (
+                    <ProjectCard
+                      key={project._id}
+                      project={project}
+                      index={index}
+                      viewMode="grid"
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="list"
+                className="space-y-6"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.4, staggerChildren: 0.05 }}
+                layout
+              >
+                <AnimatePresence>
+                  {filteredProjects.map((project, index) => (
+                    <ProjectCard
+                      key={project._id}
+                      project={project}
+                      index={index}
+                      viewMode="list"
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
+        {/* Enhanced Empty State */}
         {filteredProjects.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-xl text-secondary/60 dark:text-secondary-400">
-              No projects found in this category.
-            </p>
-          </div>
+          <motion.div 
+            className="text-center py-20"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="bg-white dark:bg-secondary-800 rounded-2xl p-12 shadow-lg border border-gray-200 dark:border-secondary-700 max-w-md mx-auto">
+              <div className="w-20 h-20 bg-gradient-to-br from-primary/10 to-purple-600/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-secondary dark:text-white mb-3">No projects found</h3>
+              <p className="text-secondary/60 dark:text-secondary-400 mb-6">
+                {searchTerm 
+                  ? `No projects match "${searchTerm}" in ${selectedCategory === 'all' ? 'any category' : selectedCategory}.`
+                  : `No projects found in ${selectedCategory}.`
+                }
+              </p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('all');
+                }}
+                className="bg-primary text-white px-6 py-3 rounded-xl hover:bg-primary/90 transition-colors duration-200"
+              >
+                Clear Filters
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Enhanced Load More Button */}
+        {!loading && hasMore && filteredProjects.length > 0 && (
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <button
+              onClick={loadMore}
+              className="bg-gradient-to-r from-primary to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 shadow-primary/25"
+            >
+              Load More Projects
+            </button>
+          </motion.div>
+        )}
+
+        {/* Loading State */}
+        {loading && projects.length > 0 && (
+          <motion.div 
+            className="text-center py-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent mx-auto"></div>
+            <p className="text-secondary/60 dark:text-secondary-400 mt-4">Loading more projects...</p>
+          </motion.div>
         )}
       </div>
     </div>

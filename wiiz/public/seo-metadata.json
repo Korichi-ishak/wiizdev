@@ -1,0 +1,87 @@
+{
+  "siteName": "WiizDev",
+  "defaultTitle": "WiizDev - Growth-Driven Digital Solutions",
+  "titleTemplate": "%s | WiizDev",
+  "defaultDescription": "WiizDev delivers innovative digital solutions, web development, and technology consulting services. From concept to deployment, we build future-ready applications that drive business growth.",
+  "siteUrl": "https://wiizdev.com",
+  "defaultLanguage": "en",
+  "defaultImage": "https://wiizdev.com/og-image.jpg",
+  "twitterHandle": "@wiizdev",
+  "facebookAppId": "",
+  "googleSiteVerification": "",
+  "bingSiteVerification": "",
+  "keywords": [
+    "web development",
+    "digital solutions",
+    "software development",
+    "technology consulting",
+    "full-stack development",
+    "modern web applications",
+    "business growth",
+    "innovative solutions"
+  ],
+  "pages": {
+    "/": {
+      "title": "WiizDev - Growth-Driven Digital Solutions",
+      "description": "Transform your business with innovative digital solutions. WiizDev specializes in modern web development, full-stack applications, and technology consulting services.",
+      "keywords": ["digital agency", "web development", "business solutions", "technology consulting"]
+    },
+    "/about": {
+      "title": "About WiizDev - Our Story & Mission",
+      "description": "Learn about WiizDev's mission to deliver growth-driven digital solutions. Discover our team, values, and commitment to innovation in web development.",
+      "keywords": ["about wiizdev", "company mission", "development team", "digital agency"]
+    },
+    "/projects": {
+      "title": "Our Projects - Portfolio & Case Studies",
+      "description": "Explore WiizDev's portfolio of successful digital projects. From web applications to complex software solutions, see how we help businesses grow.",
+      "keywords": ["portfolio", "case studies", "web projects", "software development"]
+    },
+    "/all-projects": {
+      "title": "Complete Project Portfolio - WiizDev",
+      "description": "Browse our complete collection of digital projects and case studies. Discover the full range of solutions WiizDev has delivered across industries.",
+      "keywords": ["complete portfolio", "all projects", "case studies", "digital solutions"]
+    },
+    "/tech-stack": {
+      "title": "Technology Stack - Tools & Expertise",
+      "description": "Discover the cutting-edge technologies and tools WiizDev uses to build modern, scalable applications. From frontend to backend, we use the best in class.",
+      "keywords": ["technology stack", "programming languages", "development tools", "frameworks"]
+    },
+    "/contact": {
+      "title": "Contact WiizDev - Start Your Project Today",
+      "description": "Ready to transform your business with digital solutions? Contact WiizDev today for a consultation and let's discuss your next project.",
+      "keywords": ["contact", "consultation", "project inquiry", "get in touch"]
+    }
+  },
+  "structuredData": {
+    "organization": {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "WiizDev",
+      "url": "https://wiizdev.com",
+      "logo": "https://wiizdev.com/logo.png",
+      "description": "Digital solutions and web development company",
+      "sameAs": [
+        "https://twitter.com/wiizdev",
+        "https://linkedin.com/company/wiizdev",
+        "https://github.com/wiizdev"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "url": "https://wiizdev.com/contact"
+      }
+    },
+    "website": {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "WiizDev",
+      "url": "https://wiizdev.com",
+      "description": "Growth-Driven Digital Solutions",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://wiizdev.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  }
+}
