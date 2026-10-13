@@ -1,108 +1,52 @@
-# Wiiz Dev - Full Stack Application
+# Wiiz Dev — site d'agence et back-office
 
-This is a full-stack application with a React frontend and Node.js/Express backend connected to MongoDB.
+Site d'une agence de services numériques, avec un back-office pour gérer son contenu sans toucher au code : projets, technologies affichées, réglages du site et messages reçus par le formulaire de contact.
 
-## Prerequisites
+## Ce qu'il contient
 
-- Node.js (v16 or higher)
-- npm (v8 or higher)
-- MongoDB (running locally or connection string)
+**Site public** : accueil, à propos, projets, technologies, contact.
 
-## Installation
+**Back-office** (`/admin`, connexion requise) :
+- Projets : création, modification, suppression
+- Technologies : gestion de la liste et de sa visibilité sur le site
+- Messages : lecture, statut, réponse par e-mail
+- Réglages du site
 
-To install all dependencies for both frontend and backend with a single command:
+## Stack
 
-```bash
-npm run install:all
-```
+- **Front-end** (`wiiz/`) : React · TypeScript · Vite · Tailwind CSS · React Router · TanStack Query · React Hook Form · Yup · Framer Motion · Three.js
+- **Back-end** (`backend/`) : Node.js · Express · TypeScript · MongoDB (Mongoose) · JWT · bcrypt · Nodemailer · Multer · Helmet
 
-This will install:
-- Root dependencies (concurrently)
-- Backend dependencies
-- Frontend dependencies
-
-## Configuration
-
-1. Create a `.env` file in the backend directory based on `.env.example`:
-```bash
-cd backend
-cp .env.example .env
-```
-
-2. Update the `.env` file with your MongoDB connection string and other configurations.
-
-## Running the Application
-
-To start both frontend and backend servers with a single command:
+## Lancer en local
 
 ```bash
-npm start
+npm run install:all   # installe la racine, le back-end et le front-end
+npm run dev           # lance le back-end (port 5000) et le front-end ensemble
 ```
 
-Or:
+Variables d'environnement du back-end (`backend/.env`) :
 
 ```bash
-npm run dev
+MONGODB_URI=
+JWT_SECRET=
+EMAIL_HOST=
+EMAIL_PORT=
+EMAIL_USER=
+EMAIL_PASS=
+FROM_EMAIL=
+PORT=5000
 ```
 
-This will run:
-- Backend server on http://localhost:5000
-- Frontend server on http://localhost:5173
+## API
 
-## Individual Commands
+| Ressource | Lecture publique | Écriture (admin) |
+|---|---|---|
+| `/api/projects` | GET | POST, PUT, DELETE |
+| `/api/techstack` | GET | POST, PUT, DELETE |
+| `/api/settings` | GET | PUT |
+| `/api/emails` | POST (formulaire de contact) | GET, PUT, DELETE, réponse |
+| `/api/auth` | POST `/login` | POST `/admin` |
 
-If you need to run services individually:
+---
 
-### Backend only:
-```bash
-npm run start:backend
-```
-
-### Frontend only:
-```bash
-npm run start:frontend
-```
-
-### Install backend dependencies only:
-```bash
-npm run install:backend
-```
-
-### Install frontend dependencies only:
-```bash
-npm run install:frontend
-```
-
-## Building for Production
-
-To build both frontend and backend:
-
-```bash
-npm run build
-```
-
-## API Integration
-
-The frontend is connected to the backend using Axios. The following APIs are integrated:
-
-- **Contact Form**: Submissions are stored in MongoDB
-- **Projects**: Dynamic project data from database
-- **Tech Stack**: Technology information from database
-- **Authentication**: Admin panel with JWT authentication
-
-## Features
-
-- ✅ Unified command for installing dependencies
-- ✅ Unified command for starting both servers
-- ✅ MongoDB integration
-- ✅ Axios for API calls
-- ✅ Contact form data stored in database
-- ✅ Dynamic content management through admin panel
-- ✅ JWT authentication for admin routes
-
-## Troubleshooting
-
-If you encounter TypeScript errors in the backend, try:
-1. Delete `node_modules` and `package-lock.json` in the backend folder
-2. Run `npm install` again in the backend folder
-3. If issues persist, run the backend in development mode which bypasses TypeScript compilation
+Réalisé par **Ishak Korichi** · [korichi-ishak.vercel.app](https://korichi-ishak.vercel.app)
