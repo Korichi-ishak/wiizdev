@@ -35,6 +35,8 @@ EMAIL_USER=
 EMAIL_PASS=
 FROM_EMAIL=
 PORT=5000
+SEED_ADMIN_PASSWORD=          # utilisé par npm run setup et npm run seed
+SEED_SUPER_ADMIN_PASSWORD=    # utilisé par npm run seed
 ```
 
 ## API

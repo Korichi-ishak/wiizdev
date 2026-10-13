@@ -30,7 +30,11 @@ const setupDefaultData = async () => {
         // Create default admin if none exists
         const adminCount = await Admin_1.default.countDocuments();
         if (adminCount === 0) {
-            const hashedPassword = await bcryptjs_1.default.hash('admin123', 10);
+            const defaultPassword = process.env.SEED_ADMIN_PASSWORD;
+            if (!defaultPassword) {
+                throw new Error('SEED_ADMIN_PASSWORD doit être défini dans .env');
+            }
+            const hashedPassword = await bcryptjs_1.default.hash(defaultPassword, 10);
             const defaultAdmin = new Admin_1.default({
                 email: 'admin@example.com',
                 password: hashedPassword,
@@ -40,7 +44,7 @@ const setupDefaultData = async () => {
             await defaultAdmin.save();
             console.log('✅ Default admin created:');
             console.log('   Email: admin@example.com');
-            console.log('   Password: admin123');
+            console.log('   Mot de passe : celui de SEED_ADMIN_PASSWORD');
         }
         else {
             console.log('⚠️  Admin users already exist');
@@ -148,7 +152,7 @@ const setupDefaultData = async () => {
         console.log('\nYou can now:');
         console.log('1. Start the server: npm run dev');
         console.log('2. Login to admin panel: http://localhost:3000/admin/login');
-        console.log('3. Use credentials: admin@example.com / admin123');
+        console.log('3. Use credentials: admin@example.com / mot de passe SEED_ADMIN_PASSWORD');
         process.exit(0);
     }
     catch (error) {

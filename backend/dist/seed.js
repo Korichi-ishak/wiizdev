@@ -24,7 +24,12 @@ const seedData = async () => {
         console.log('✅ Existing data cleared\n');
         // Create admin users
         console.log('👤 Creating admin users...');
-        const hashedPassword = await bcryptjs_1.default.hash('admin123', 10);
+        const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+        const superAdminPassword = process.env.SEED_SUPER_ADMIN_PASSWORD;
+        if (!adminPassword || !superAdminPassword) {
+            throw new Error('SEED_ADMIN_PASSWORD et SEED_SUPER_ADMIN_PASSWORD doivent être définis dans .env');
+        }
+        const hashedPassword = await bcryptjs_1.default.hash(adminPassword, 10);
         const admins = [
             {
                 email: 'admin@wiizdev.com',
@@ -34,15 +39,14 @@ const seedData = async () => {
             },
             {
                 email: 'super@wiizdev.com',
-                password: await bcryptjs_1.default.hash('super123', 10),
+                password: await bcryptjs_1.default.hash(superAdminPassword, 10),
                 name: 'Super Admin',
                 role: 'super_admin'
             }
         ];
         await Admin_1.default.insertMany(admins);
         console.log('✅ Admin users created');
-        console.log('   - Email: admin@wiizdev.com | Password: admin123');
-        console.log('   - Email: super@wiizdev.com | Password: super123\n');
+        console.log('   - admin@wiizdev.com et super@wiizdev.com (mots de passe lus depuis .env)\n');
         // Create tech stack
         console.log('🛠️  Creating tech stack...');
         const techStackData = [
